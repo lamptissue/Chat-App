@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  Button,
   ImageBackground,
   TouchableOpacity,
 } from "react-native";
@@ -137,7 +136,7 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     borderWidth: 2,
     width: "88%",
-    opacity: "50%",
+    // opacity: "50%",
     padding: 20,
   },
   title: {
@@ -162,7 +161,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "400",
     color: "#757083",
-    opacity: "100%",
+    // opacity: "100%",
   },
   color: {
     width: 45,
