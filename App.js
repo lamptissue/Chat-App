@@ -1,6 +1,4 @@
-import { StatusBar } from "expo-status-bar";
 import React, { Component } from "react";
-import { StyleSheet, Text, View } from "react-native";
 import Start from "./components/Start";
 import Chat from "./components/Chat";
 // import react native gesture handler

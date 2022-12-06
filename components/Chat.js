@@ -1,45 +1,107 @@
 import React from "react";
 import { View, Platform, Button, KeyboardAvoidingView } from "react-native";
 import { GiftedChat, Bubble } from "react-native-gifted-chat";
+const firebase = require("firebase");
+require("firebase/firestore");
 
 export default class Chat extends React.Component {
   constructor() {
     super();
     this.state = {
       messages: [],
+      uid: 0,
+      user: {
+        _id: "",
+        avatar: "",
+        name: "",
+      },
     };
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDpNOktB7_TssqGW4RqE0RFxo7jIE8K6Ks",
+      authDomain: "chatapp-83d3c.firebaseapp.com",
+      projectId: "chatapp-83d3c",
+      storageBucket: "chatapp-83d3c.appspot.com",
+      messagingSenderId: "39966289943",
+    };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    this.referenceChatMessages = firebase.firestore().collection("messages");
   }
 
   // Messages for the 'Bot' to start the chat and system message
   componentDidMount() {
     let name = this.props.route.params.name;
     this.props.navigation.setOptions({ title: name });
-    this.setState({
-      messages: [
-        {
-          _id: 1,
-          text: `Hello ${name}`,
-          createdAt: new Date(),
-          user: {
-            _id: 2,
-            name: "React Native",
-            avatar: "https://placeimg.com/140/140/any",
-          },
-        },
-        {
-          _id: 2,
-          text: "Your chat has started",
-          createdAt: new Date(),
-          system: true,
-        },
-      ],
+    this.referenceChatMessages = firebase.firestore().collection("messages");
+    this.unsubscribe = this.referenceChatMessages.onSnapshot(
+      this.onCollectionUpdate
+    );
+
+    this.authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      if (!user) {
+        firebase.auth().signInAnonymously();
+      }
+      this.setState({
+        uid: user.uid,
+        messages: [],
+      });
+      this.unsubscribe = this.referenceChatMessages
+        .orderBy("createdAt", "desc")
+        .onSnapshot(this.onCollectionUpdate);
     });
   }
 
+  componentWillUnmount() {
+    this.unsubscribe();
+    this.authUnsubscribe();
+  }
+
+  onCollectionUpdate = (querySnapshot) => {
+    const messages = [];
+    // go through each document
+    querySnapshot.forEach((doc) => {
+      // get the QueryDocumentSnapshot's data
+      let data = doc.data();
+      messages.push({
+        _id: data._id,
+        text: data.text,
+        createdAt: data.createdAt.toDate(),
+        user: {
+          _id: data.user._id,
+          name: data.user.name,
+          avatar: data.user.avatar || "",
+        },
+      });
+    });
+    this.setState({
+      messages,
+    });
+  };
+
+  addMessage = () => {
+    const messages = this.state.messages[0];
+    this.referenceChatMessages.add({
+      _id: messages._id,
+      text: messages.text,
+      createdAt: messages.createdAt,
+      user: messages.user,
+      uid: this.state.uid,
+      text: messages.text || "",
+    });
+  };
+
   onSend(messages = []) {
-    this.setState((previousState) => ({
-      messages: GiftedChat.append(previousState.messages, messages),
-    }));
+    this.setState(
+      (previousState) => ({
+        messages: GiftedChat.append(previousState.messages, messages),
+      }),
+      () => {
+        this.addMessage(this.state.messages[0]);
+      }
+    );
   }
 
   //styling for the chat bubbles - user side
@@ -62,8 +124,6 @@ export default class Chat extends React.Component {
       <View
         style={{
           flex: 1,
-          // justifyContent: "center",
-          // alignItems: "center",
           backgroundColor: color,
         }}
       >
@@ -78,7 +138,8 @@ export default class Chat extends React.Component {
           messages={this.state.messages}
           onSend={(messages) => this.onSend(messages)}
           user={{
-            _id: 1,
+            _id: this.state.uid,
+            avatar: "https://placeimg.com/140/140/any",
           }}
         />
         {/* Allows keyboard to work correctly in the app */}
@@ -89,14 +150,3 @@ export default class Chat extends React.Component {
     );
   }
 }
-
-// <TouchableOpacity
-//   accessible={true}
-//   accessibilityLabel="More options"
-//   accessibilityHint="Lets you choose to send an image or your geolocation."
-//   accessibilityRole="button"
-//   onPress={this._onPress}>
-//   <View style={styles.button}>
-//    ...
-//   </View>
-// </TouchableOpacity>
