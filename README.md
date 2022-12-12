@@ -1,5 +1,7 @@
 # Chat-App
 
+![Simulator Screen Shot - iPhone 14 Pro - 2022-12-12 at 17 01 40](https://user-images.githubusercontent.com/79291013/207107598-5f65e263-eac4-475d-8bcb-3c7c29330378.png)
+
 # App overview
 
 This app provides users with a chat interface for both IOS and Android. Users are able to upload images, location and take photos.
@@ -7,6 +9,7 @@ This app provides users with a chat interface for both IOS and Android. Users ar
 # Built with
 - React Native
 - Google Firebase
+
 - Expo
 
 # Key Features
