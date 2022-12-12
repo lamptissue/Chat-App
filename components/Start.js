@@ -110,6 +110,8 @@ export default class Start extends React.Component {
             >
               <Text style={styles.buttonText}>Start Chatting</Text>
             </TouchableOpacity>
+
+            {/* Stops keyboard from hiding the view */}
             {Platform.OS === "android" ? (
               <KeyboardAvoidingView behavior='height' />
             ) : null}
@@ -141,7 +143,6 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     borderWidth: 2,
     width: "88%",
-    // opacity: "50%",
     padding: 20,
   },
   title: {

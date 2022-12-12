@@ -6,7 +6,6 @@ import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 import firebase from "firebase";
-import firestore from "firebase";
 
 export default class CustomActions extends React.Component {
   imagePicker = async () => {
@@ -68,6 +67,7 @@ export default class CustomActions extends React.Component {
     }
   };
 
+  //render image as blob
   uploadImageFetch = async (uri) => {
     const blob = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
@@ -85,16 +85,13 @@ export default class CustomActions extends React.Component {
 
     const imageNameBefore = uri.split("/");
     const imageName = imageNameBefore[imageNameBefore.length - 1];
-
     const ref = firebase.storage().ref().child(`images/${imageName}`);
-
     const snapshot = await ref.put(blob);
-
     blob.close();
-
     return await snapshot.ref.getDownloadURL();
   };
 
+  //menu items
   onActionPress = () => {
     const options = [
       "Choose From Library",

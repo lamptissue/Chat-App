@@ -57,7 +57,7 @@ export default class Chat extends React.Component {
     this.unsubscribe = this.referenceChatMessages.onSnapshot(
       this.onCollectionUpdate
     );
-
+    //authentication
     this.authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
       if (!user) {
         firebase.auth().signInAnonymously();
@@ -84,7 +84,7 @@ export default class Chat extends React.Component {
       }
     });
   }
-
+  //text input bar
   renderInputToolbar(props) {
     if (this.state.isConnected == false) {
     } else {
@@ -178,7 +178,7 @@ export default class Chat extends React.Component {
     }
   }
 
-  //styling for the chat bubbles - user side
+  //styling for the chat bubbles
   renderBubble(props) {
     return (
       <Bubble
