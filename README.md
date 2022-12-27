@@ -4,7 +4,7 @@
 
 # App overview
 
-This app provides users with a chat interface for both IOS and Android. Users are able to upload images, location and take photos.
+Chat app allows users on both IOS and Android to communicate with each other through a chat interface. In addition to sending messages, users can also share images and their location, as well as take and send photos directly through the app.
 
 # Built with
 - React Native
